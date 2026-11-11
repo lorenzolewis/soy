@@ -1,56 +1,34 @@
-import { useCallback, useState } from 'react'
-import {
-  ReactFlow,
-  Background,
-  Controls,
-  addEdge,
-  applyEdgeChanges,
-  applyNodeChanges,
-  type Edge,
-  type Node,
-  type OnConnect,
-  type OnEdgesChange,
-  type OnNodesChange,
-} from '@xyflow/react'
+import { ReactFlow, Background, BackgroundVariant } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
+import './theme/theme.css'
+import { RoughFilter } from './theme/RoughFilter'
+import { CardNodeView, StickyNodeView, type WhiteboardNode } from './nodes'
+import { useRoute, type Route } from './router'
 
-const initialNodes: Node[] = [
-  { id: '1', position: { x: 0, y: 0 }, data: { label: 'Node 1' } },
-  { id: '2', position: { x: 0, y: 120 }, data: { label: 'Node 2' } },
-]
+const nodeTypes = { card: CardNodeView, sticky: StickyNodeView }
 
-const initialEdges: Edge[] = [{ id: 'e1-2', source: '1', target: '2' }]
+// Empty until later phases lay out the content as cards.
+const nodes: WhiteboardNode[] = []
 
 export default function App() {
-  const [nodes, setNodes] = useState(initialNodes)
-  const [edges, setEdges] = useState(initialEdges)
+  // Both routes render the same board for now; later the project route opens that project's detail.
+  const route = useRoute()
+  return <Board route={route} />
+}
 
-  const onNodesChange: OnNodesChange = useCallback(
-    (changes) => setNodes((nds) => applyNodeChanges(changes, nds)),
-    [],
-  )
-  const onEdgesChange: OnEdgesChange = useCallback(
-    (changes) => setEdges((eds) => applyEdgeChanges(changes, eds)),
-    [],
-  )
-  const onConnect: OnConnect = useCallback(
-    (connection) => setEdges((eds) => addEdge(connection, eds)),
-    [],
-  )
-
+function Board({ route }: { route: Route }) {
   return (
-    <div style={{ width: '100vw', height: '100vh' }}>
-      <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        onConnect={onConnect}
-        fitView
-      >
-        <Background />
-        <Controls />
+    <main aria-label="Board" data-route={route.name} style={{ width: '100%', height: '100%' }}>
+      <RoughFilter />
+      <ReactFlow nodes={nodes} nodeTypes={nodeTypes} nodesDraggable={false} nodesConnectable={false}>
+        <Background
+          variant={BackgroundVariant.Dots}
+          bgColor="var(--wb-canvas)"
+          color="var(--wb-grid)"
+          gap={26}
+          size={1.4}
+        />
       </ReactFlow>
-    </div>
+    </main>
   )
 }

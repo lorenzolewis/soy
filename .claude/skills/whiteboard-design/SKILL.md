@@ -7,7 +7,7 @@ description: Four-Pack whiteboard design system for this app (tokens, fonts, car
 
 The app looks like a real office **whiteboard**: a white board, four **markers** (black, red, blue, green), Post-it sticky notes, and outlines that look drawn by hand and slightly **hand-placed**. Everything new should look like it was drawn on that board with those four markers.
 
-A full reference implementation (rough-line SVG filter, card and sticky-note components, React Flow overrides) is on the branch `prototype/whiteboard-design-directions`, in `src/theme/` and `src/nodes.tsx`. Read it before building the canvas styling for real.
+The implementation lives in `src/theme/theme.css` (tokens and React Flow overrides), `src/theme/RoughFilter.tsx` (rough-line SVG filter) and `src/nodes.tsx` (card and sticky-note components). Read them before adding new styling, and build on them.
 
 ## Tokens
 

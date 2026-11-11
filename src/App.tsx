@@ -20,7 +20,13 @@ function Board({ route }: { route: Route }) {
   return (
     <main aria-label="Board" data-route={route.name} style={{ width: '100%', height: '100%' }}>
       <RoughFilter />
-      <ReactFlow nodes={nodes} nodeTypes={nodeTypes} nodesDraggable={false} nodesConnectable={false}>
+      <ReactFlow
+        nodes={nodes}
+        nodeTypes={nodeTypes}
+        nodesDraggable={false}
+        nodesConnectable={false}
+        colorMode="system"
+      >
         <Background
           variant={BackgroundVariant.Dots}
           bgColor="var(--wb-canvas)"

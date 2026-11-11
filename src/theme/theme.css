@@ -3,9 +3,15 @@
  * Black, red, blue and green whiteboard markers on a clean white board.
  * Sans-serif rounded cards; sticky notes written in a marker hand.
  * Chosen from the design-directions prototype (branch prototype/whiteboard-design-directions).
+ *
+ * Follows the device's light or dark setting. Dark mode is a dark glass board:
+ * the black marker becomes a white one, the coloured markers get brighter, and
+ * sticky notes stay paper.
  */
 
 :root {
+  color-scheme: light dark;
+
   /* Fonts */
   --wb-font-ui: 'Nunito', system-ui, sans-serif;
   --wb-font-handwriting: 'Shantell Sans', 'Comic Sans MS', cursive;
@@ -16,13 +22,15 @@
   --wb-marker-red: #d2433b;
   --wb-marker-blue: #2b5fbf;
   --wb-marker-green: #1e8a4c;
+  /* Structure (text, outlines, handles): the black marker, or the white one on the dark board */
+  --wb-ink: var(--wb-marker-black);
 
   /* Board */
   --wb-canvas: #fafbfb;
   --wb-grid: #dfe3e6;
   --wb-node-fill: #ffffff;
-  --wb-node-border: var(--wb-marker-black);
-  --wb-node-text: var(--wb-marker-black);
+  --wb-node-border: var(--wb-ink);
+  --wb-node-text: var(--wb-ink);
   --wb-node-muted: #5c6066;
   --wb-accent: var(--wb-marker-red);
   --wb-accent-text: #ffffff;
@@ -56,9 +64,44 @@
   --xy-edge-label-color: var(--wb-node-muted);
   --xy-controls-button-background-color: var(--wb-node-fill);
   --xy-controls-button-background-color-hover: rgb(30 138 76 / 0.08);
-  --xy-controls-button-color: var(--wb-marker-black);
-  --xy-controls-button-color-hover: var(--wb-marker-black);
-  --xy-controls-button-border-color: var(--wb-marker-black);
+  --xy-controls-button-color: var(--wb-ink);
+  --xy-controls-button-color-hover: var(--wb-ink);
+  --xy-controls-button-border-color: var(--wb-ink);
+  --xy-attribution-background-color: color-mix(in srgb, var(--wb-canvas) 60%, transparent);
+}
+
+/* Dark mode: a dark glass board */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --wb-marker-red: #ff8577;
+    --wb-marker-blue: #86afff;
+    --wb-marker-green: #5fd08f;
+    --wb-marker-white: #eceef0;
+    --wb-ink: var(--wb-marker-white);
+
+    --wb-canvas: #17191c;
+    --wb-grid: #2f3338;
+    --wb-node-fill: #212428;
+    --wb-node-muted: #a3a8ae;
+    --wb-accent-text: var(--wb-canvas); /* the bright red and green need dark text */
+
+    /* Sticky notes are paper, so they keep their colour, a touch dimmer, with black text */
+    --wb-sticky-yellow: #e9d575;
+    --wb-sticky-red: #e6a69e;
+    --wb-sticky-blue: #9dbbe4;
+    --wb-sticky-green: #9dd1aa;
+
+    --wb-card-shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 6px 14px rgb(0 0 0 / 0.35);
+    --wb-sticky-shadow: 0 1px 3px rgb(0 0 0 / 0.4);
+
+    --xy-selection-background-color: rgb(95 208 143 / 0.1);
+    --xy-controls-button-background-color-hover: rgb(95 208 143 / 0.1);
+  }
+}
+
+body {
+  background: var(--wb-canvas);
+  color: var(--wb-ink);
 }
 
 .react-flow {

@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { lazy, Suspense, useCallback, useState } from 'react'
 import {
   ReactFlow,
   Background,
@@ -21,7 +21,24 @@ const initialNodes: Node[] = [
 
 const initialEdges: Edge[] = [{ id: 'e1-2', source: '1', target: '2' }]
 
+// PROTOTYPE: design directions, dev only. Open /?direction=graphite (or sketchbook, blueprint, pop, all).
+const DesignDirections =
+  import.meta.env.DEV && new URLSearchParams(window.location.search).has('direction')
+    ? lazy(() => import('./prototypes/design-directions/DesignDirections'))
+    : null
+
 export default function App() {
+  if (DesignDirections) {
+    return (
+      <Suspense>
+        <DesignDirections />
+      </Suspense>
+    )
+  }
+  return <Canvas />
+}
+
+function Canvas() {
   const [nodes, setNodes] = useState(initialNodes)
   const [edges, setEdges] = useState(initialEdges)
 

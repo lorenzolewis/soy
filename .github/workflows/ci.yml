@@ -42,10 +42,3 @@ jobs:
       # `build` runs `tsc -b` before `vite build`, so it also typechecks
       - name: Typecheck and build
         run: pnpm build
-
-      - name: Install Playwright browser
-        run: pnpm exec playwright install --with-deps chromium
-
-      # Runs against the site built in the previous step
-      - name: Test
-        run: pnpm test

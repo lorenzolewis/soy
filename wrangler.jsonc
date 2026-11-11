@@ -1,0 +1,26 @@
+// Cloudflare Workers config: a static-assets-only Worker (no Worker script).
+// The Cloudflare Vite plugin reads this file and writes the deployable config to
+// dist/wrangler.json on `vite build`; `wrangler deploy` and `wrangler preview` use that.
+// Docs: https://developers.cloudflare.com/workers/vite-plugin/
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "soy",
+  "compatibility_date": "2026-11-11",
+  "assets": {
+    // Serve index.html for unknown paths so client-side routes like /projects/<slug> work.
+    "not_found_handling": "single-page-application"
+  },
+  // Production is served only on the custom domain.
+  "workers_dev": false,
+  "routes": [
+    {
+      "pattern": "lorenzo.soy",
+      "custom_domain": true
+    }
+  ],
+  // Workers Previews: one isolated Preview per branch or pull request,
+  // on a workers.dev Preview URL (Cloudflare adds `X-Robots-Tag: noindex` there).
+  // https://developers.cloudflare.com/workers/previews/
+  "preview_urls": true,
+  "previews": {}
+}

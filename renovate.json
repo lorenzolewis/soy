@@ -1,0 +1,16 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["github>lorenzolewis/renovate-config"],
+  "packageRules": [
+    {
+      "description": "Vite and its React plugin",
+      "groupName": "vite",
+      "matchPackageNames": ["vite", "@vitejs/plugin-react"]
+    },
+    {
+      "description": "No CI yet: turn off the preset's auto-merge until a workflow builds and lints every PR",
+      "matchPackageNames": ["*"],
+      "automerge": false
+    }
+  ]
+}

@@ -53,6 +53,13 @@ export type Direction = {
     grid: 'dots' | 'lines' | 'cross'
     gridGap: number
     gridSize: number
+    // Optional hand-drawn treatment: wobbly outlines, a second offset stroke, tilted cards.
+    sketch?: {
+      roughness: number // displacement in px applied to outlines and edges
+      wobbleRadius: string // irregular border-radius for cards and chrome
+      doubleStroke: boolean
+      cardTilt: boolean
+    }
   }
   light: Palette
   dark?: Palette

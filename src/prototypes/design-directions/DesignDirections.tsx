@@ -1,17 +1,18 @@
 // PROTOTYPE — throwaway.
-// Question: what should the whiteboard look like? Four token-based design directions on a
+// Question: what should the whiteboard look like? Token-based design directions on a
 // real React Flow canvas, switchable via `?direction=<id>|all` and `&mode=light|dark`.
 // Bottom bar or ←/→ cycles directions, `D` toggles dark mode.
 import { useEffect, useState } from 'react'
 import '@xyflow/react/dist/style.css'
 import './directions.css'
 import { WhiteboardCanvas } from './WhiteboardCanvas'
-import { graphite } from './graphite'
 import { sketchbook } from './sketchbook'
-import { blueprint } from './blueprint'
 import { pop } from './pop'
+import { sketchpop } from './sketchpop'
 
-const directions = [graphite, sketchbook, blueprint, pop]
+// A (Graphite) and C (Blueprint) were dropped; see commit f99b6ac.
+const directions = [sketchpop, sketchbook, pop]
+const letters: Record<string, string> = { sketchbook: 'B', pop: 'D', sketchpop: 'E' }
 const keys = [...directions.map((d) => d.id), 'all']
 type Mode = 'light' | 'dark'
 
@@ -57,8 +58,7 @@ export default function DesignDirections() {
   }, [])
 
   const current = directions.find((d) => d.id === key)
-  const index = keys.indexOf(key)
-  const label = current ? `${String.fromCharCode(65 + index)} · ${current.name}` : 'Compare all'
+  const label = current ? `${letters[current.id]} · ${current.name}` : 'Compare all'
 
   return (
     <>

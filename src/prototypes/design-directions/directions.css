@@ -96,6 +96,70 @@
   outline-offset: 3px;
 }
 
+/* Hand-sketched treatment (directions with shape.sketch).
+   The fill + outline move onto pseudo-elements so the rough filter never touches text. */
+.wb-sketch .wb-card,
+.wb-sketch .wb-sticky {
+  position: relative;
+  isolation: isolate;
+  background: none;
+  border-color: transparent;
+  box-shadow: none;
+  border-radius: var(--wb-wobble);
+}
+.wb-sketch .wb-card {
+  rotate: calc(var(--wb-tilt) * var(--wb-card-tilt-enabled));
+}
+.wb-sketch .wb-card::before,
+.wb-sketch .wb-sticky::before {
+  content: '';
+  position: absolute;
+  inset: calc(var(--wb-border-width) * -1);
+  z-index: -1;
+  background: var(--wb-node-fill);
+  border: var(--wb-border-width) solid var(--wb-node-border);
+  border-radius: var(--wb-wobble);
+  box-shadow: var(--wb-node-shadow);
+  filter: var(--wb-rough);
+}
+.wb-sketch .wb-sticky::before {
+  inset: 0;
+  border: 0;
+  background: var(--wb-sticky-bg);
+  border-radius: var(--wb-sticky-radius);
+  box-shadow: var(--wb-sticky-shadow);
+}
+/* Second, slightly offset pencil line */
+.wb-sketch .wb-card::after {
+  content: '';
+  position: absolute;
+  inset: -1px -4px -4px -1px;
+  z-index: -1;
+  border: 1px solid var(--wb-node-border);
+  border-radius: 9px 18px 7px 16px / 16px 8px 17px 9px;
+  opacity: calc(0.45 * var(--wb-double-stroke));
+  rotate: -0.6deg;
+  filter: var(--wb-rough);
+  pointer-events: none;
+}
+.wb-sketch .react-flow__edge-path {
+  filter: var(--wb-rough);
+}
+.wb-sketch .react-flow__node.selected .wb-card,
+.wb-sketch .react-flow__node.selected .wb-sticky {
+  outline-style: dashed;
+  outline-offset: 6px;
+}
+.wb-sketch .wb-tag {
+  border-radius: 10px 4px 9px 5px / 5px 9px 4px 10px;
+}
+.wb-sketch .wb-toolbar,
+.wb-sketch .wb-toolbar button,
+.wb-sketch .wb-tokens,
+.wb-sketch .react-flow__controls {
+  border-radius: var(--wb-wobble);
+}
+
 /* Chrome: toolbar, controls, token card */
 .wb-toolbar {
   display: flex;
@@ -195,6 +259,9 @@
   width: 100vw;
   height: 100vh;
   background: #000;
+}
+.wb-grid > :first-child {
+  grid-row: span 2;
 }
 
 /* Prototype switcher: deliberately NOT part of any direction */

@@ -1,5 +1,5 @@
 // PROTOTYPE — throwaway. Shared shape of a whiteboard design direction ("design ticket").
-// Each direction lives in its own file next to this one and exports a `Direction`.
+// The whiteboard direction shares fonts + shape (whiteboard.ts); variants differ only by palette.
 
 export type FontToken = {
   family: string
@@ -7,6 +7,7 @@ export type FontToken = {
   weight: number
   lineHeight?: number
   letterSpacing?: string
+  variation?: string // font-variation-settings
 }
 
 export type Palette = {
@@ -53,14 +54,14 @@ export type Direction = {
     grid: 'dots' | 'lines' | 'cross'
     gridGap: number
     gridSize: number
-    // Optional hand-drawn treatment: wobbly outlines, a second offset stroke, tilted cards.
+    // Optional hand-drawn treatment: wobbly outlines and edges, tilted cards.
     sketch?: {
       roughness: number // displacement in px applied to outlines and edges
       wobbleRadius: string // irregular border-radius for cards and chrome
-      doubleStroke: boolean
       cardTilt: boolean
     }
   }
-  light: Palette
+  // At least one of these; the canvas falls back to whichever exists.
+  light?: Palette
   dark?: Palette
 }

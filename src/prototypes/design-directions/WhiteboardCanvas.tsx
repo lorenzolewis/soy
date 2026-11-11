@@ -92,6 +92,7 @@ function fontVars(prefix: string, f: FontToken) {
     [`--wb-${prefix}-weight`]: f.weight,
     [`--wb-${prefix}-lh`]: f.lineHeight ?? 1.3,
     [`--wb-${prefix}-ls`]: f.letterSpacing ?? 'normal',
+    [`--wb-${prefix}-fvs`]: f.variation ?? 'normal',
   }
 }
 
@@ -125,7 +126,6 @@ function cssVars(d: Direction, p: Palette): CSSProperties {
     '--wb-wobble': s.sketch?.wobbleRadius ?? `${s.radius}px`,
     '--wb-rough': s.sketch ? `url(#wb-rough-${d.id})` : 'none',
     '--wb-card-tilt-enabled': s.sketch?.cardTilt ? 1 : 0,
-    '--wb-double-stroke': s.sketch?.doubleStroke ? 1 : 0,
     // React Flow's own theming variables
     '--xy-edge-stroke': p.edge,
     '--xy-edge-stroke-width': s.edgeWidth,
@@ -156,7 +156,8 @@ export function WhiteboardCanvas({
   mode: 'light' | 'dark'
   compact?: boolean
 }) {
-  const palette = (mode === 'dark' && d.dark) || d.light
+  const palette = (mode === 'dark' ? (d.dark ?? d.light) : (d.light ?? d.dark))!
+  const shownMode = palette === d.dark ? 'dark' : 'light'
   const [nodes, setNodes] = useState(initialNodes)
   const [edges, setEdges] = useState(initialEdges)
 
@@ -199,7 +200,7 @@ export function WhiteboardCanvas({
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
-        colorMode={mode}
+        colorMode={shownMode}
         defaultEdgeOptions={{
           type: d.shape.edgeType,
           markerEnd: { type: MarkerType.ArrowClosed, width: 16, height: 16, color: palette.edge },
@@ -227,7 +228,7 @@ export function WhiteboardCanvas({
         </Panel>
         <Panel position="top-right" className="wb-tokens">
           <div className="wb-tokens-name">
-            {d.name} <span>{palette === d.light ? 'light' : 'dark'}</span>
+            {d.name} <span>{shownMode}</span>
           </div>
           {compact ? null : (
             <>
@@ -251,8 +252,8 @@ export function WhiteboardCanvas({
               <span key={label} title={`${label} ${c}`} style={{ background: c }} />
             ))}
             <i />
-            {palette.stickies.map((c) => (
-              <span key={c} title={`sticky ${c}`} style={{ background: c }} />
+            {palette.stickies.map((c, i) => (
+              <span key={i} title={`sticky ${c}`} style={{ background: c }} />
             ))}
           </div>
             </>

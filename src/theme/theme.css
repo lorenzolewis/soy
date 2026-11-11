@@ -1,0 +1,231 @@
+/*
+ * Whiteboard theme: "Four-Pack".
+ * Black, red, blue and green whiteboard markers on a clean white board.
+ * Sans-serif rounded cards; sticky notes written in a marker hand.
+ * Chosen from the design-directions prototype (branch prototype/whiteboard-design-directions).
+ *
+ * Follows the device's light or dark setting. Dark mode is a dark glass board:
+ * the black marker becomes a white one, the coloured markers get brighter, and
+ * sticky notes stay paper.
+ */
+
+:root {
+  color-scheme: light dark;
+
+  /* Fonts */
+  --wb-font-ui: 'Nunito', system-ui, sans-serif;
+  --wb-font-handwriting: 'Shantell Sans', 'Comic Sans MS', cursive;
+  --wb-font-handwriting-settings: 'INFM' 100, 'BNCE' 40; /* informal letterforms, bouncy baseline */
+
+  /* Marker colours */
+  --wb-marker-black: #1c1d20;
+  --wb-marker-red: #d2433b;
+  --wb-marker-blue: #2b5fbf;
+  --wb-marker-green: #1e8a4c;
+  /* Structure (text, outlines, handles): the black marker, or the white one on the dark board */
+  --wb-ink: var(--wb-marker-black);
+
+  /* Board */
+  --wb-canvas: #fafbfb;
+  --wb-grid: #dfe3e6;
+  --wb-node-fill: #ffffff;
+  --wb-node-border: var(--wb-ink);
+  --wb-node-text: var(--wb-ink);
+  --wb-node-muted: #5c6066;
+  --wb-accent: var(--wb-marker-red);
+  --wb-accent-text: #ffffff;
+  --wb-selection: var(--wb-marker-green);
+
+  /* Sticky notes: pale versions of the markers, plus classic yellow */
+  --wb-sticky-yellow: #f4e07d;
+  --wb-sticky-red: #f2b0a8;
+  --wb-sticky-blue: #a7c5ee;
+  --wb-sticky-green: #a6dbb4;
+  --wb-sticky-text: var(--wb-marker-black);
+
+  /* Shape */
+  --wb-border-width: 2px;
+  --wb-radius: 14px;
+  --wb-wobble: 18px 9px 16px 7px / 8px 15px 9px 17px; /* hand-drawn rounded corners */
+  --wb-card-shadow: 0 1px 2px rgb(0 0 0 / 0.07), 0 5px 12px rgb(0 0 0 / 0.09);
+  --wb-sticky-shadow: 0 1px 3px rgb(0 0 0 / 0.07);
+  --wb-rough: url(#wb-rough); /* see RoughFilter.tsx */
+
+  /* React Flow */
+  --xy-edge-stroke: var(--wb-marker-blue);
+  --xy-edge-stroke-width: 2;
+  --xy-edge-stroke-selected: var(--wb-marker-green);
+  --xy-connectionline-stroke: var(--wb-marker-green);
+  --xy-selection-background-color: rgb(30 138 76 / 0.08);
+  --xy-selection-border: 1px solid var(--wb-marker-green);
+  --xy-handle-background-color: var(--wb-node-border);
+  --xy-handle-border-color: var(--wb-node-fill);
+  --xy-edge-label-background-color: var(--wb-canvas);
+  --xy-edge-label-color: var(--wb-node-muted);
+  --xy-controls-button-background-color: var(--wb-node-fill);
+  --xy-controls-button-background-color-hover: rgb(30 138 76 / 0.08);
+  --xy-controls-button-color: var(--wb-ink);
+  --xy-controls-button-color-hover: var(--wb-ink);
+  --xy-controls-button-border-color: var(--wb-ink);
+  --xy-attribution-background-color: color-mix(in srgb, var(--wb-canvas) 60%, transparent);
+}
+
+/* Dark mode: a dark glass board */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --wb-marker-red: #ff8577;
+    --wb-marker-blue: #86afff;
+    --wb-marker-green: #5fd08f;
+    --wb-marker-white: #eceef0;
+    --wb-ink: var(--wb-marker-white);
+
+    --wb-canvas: #17191c;
+    --wb-grid: #2f3338;
+    --wb-node-fill: #212428;
+    --wb-node-muted: #a3a8ae;
+    --wb-accent-text: var(--wb-canvas); /* the bright red and green need dark text */
+
+    /* Sticky notes are paper, so they keep their colour, a touch dimmer, with black text */
+    --wb-sticky-yellow: #e9d575;
+    --wb-sticky-red: #e6a69e;
+    --wb-sticky-blue: #9dbbe4;
+    --wb-sticky-green: #9dd1aa;
+
+    --wb-card-shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 6px 14px rgb(0 0 0 / 0.35);
+    --wb-sticky-shadow: 0 1px 3px rgb(0 0 0 / 0.4);
+
+    --xy-selection-background-color: rgb(95 208 143 / 0.1);
+    --xy-controls-button-background-color-hover: rgb(95 208 143 / 0.1);
+  }
+}
+
+body {
+  background: var(--wb-canvas);
+  color: var(--wb-ink);
+}
+
+.react-flow {
+  font-family: var(--wb-font-ui);
+}
+
+/* Edges: dashed, slightly rough marker lines */
+.react-flow__edge-path {
+  stroke-dasharray: 7 5;
+  filter: var(--wb-rough);
+}
+.react-flow__edge.animated .react-flow__edge-path {
+  stroke-dasharray: 5;
+}
+.react-flow__edge-text {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.react-flow__handle {
+  width: 8px;
+  height: 8px;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.react-flow__node:hover .react-flow__handle,
+.react-flow__node.selected .react-flow__handle {
+  opacity: 1;
+}
+
+.react-flow__controls {
+  border: var(--wb-border-width) solid var(--wb-node-border);
+  border-radius: var(--wb-wobble);
+  overflow: hidden;
+  box-shadow: var(--wb-card-shadow);
+}
+.react-flow__controls-button:last-child {
+  border-bottom: 0;
+}
+
+/*
+ * Cards and sticky notes draw their fill, outline and shadow on ::before so the
+ * rough filter wobbles the edges without blurring the text.
+ */
+.wb-card,
+.wb-sticky {
+  position: relative;
+  isolation: isolate;
+  box-sizing: border-box;
+  rotate: var(--wb-tilt, 0deg);
+}
+.wb-card::before,
+.wb-sticky::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  filter: var(--wb-rough);
+}
+
+.wb-card {
+  width: 210px;
+  padding: 12px 14px;
+  color: var(--wb-node-text);
+  border-radius: var(--wb-wobble);
+}
+.wb-card::before {
+  inset: 0;
+  background: var(--wb-node-fill);
+  border: var(--wb-border-width) solid var(--wb-node-border);
+  border-radius: var(--wb-wobble);
+  box-shadow: var(--wb-card-shadow);
+}
+.wb-card-title {
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+  margin-bottom: 4px;
+}
+.wb-card-body {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--wb-node-muted);
+}
+
+.wb-sticky {
+  width: 150px;
+  min-height: 120px;
+  padding: 14px;
+  color: var(--wb-sticky-text);
+  font-family: var(--wb-font-handwriting);
+  font-variation-settings: var(--wb-font-handwriting-settings);
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1.25;
+}
+.wb-sticky::before {
+  inset: 0;
+  background: var(--wb-sticky-bg);
+  border-radius: 2px;
+  box-shadow: var(--wb-sticky-shadow);
+}
+
+/* Selected state */
+.react-flow__node.selected .wb-card,
+.react-flow__node.selected .wb-sticky {
+  outline: 2px dashed var(--wb-selection);
+  outline-offset: 6px;
+}
+
+/*
+ * Missing content (see src/content/Fact.tsx): written in red marker inside a dashed
+ * box, so a placeholder can never be mistaken for a real fact.
+ */
+.wb-placeholder {
+  display: inline-block;
+  padding: 0 6px;
+  border: 1.5px dashed var(--wb-marker-red);
+  border-radius: 6px;
+  color: var(--wb-marker-red);
+  font-weight: 700;
+}
+.wb-placeholder::before {
+  content: 'Needs: ';
+  font-weight: 800;
+}
